@@ -17,38 +17,118 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="/assets/css/libs/material.min.css">
-  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
   <!--
       Our Custom css if needed which has been done throught the course
     -->
   <link rel="stylesheet" href="/assets/css/style.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <style>
+    .customeBtn {
+      background: #56042c;
+      color: white;
+      padding: 4px 4em;
+      border-radius: 8px;
+      border: 1.5px solid #Fec310;
+      width: 13em;
+      margin: 20px 0px;
+    }
+
+    .container {
+      background-image: url(./assets/images/background.jpeg);
+      height: 100vh;
+      flex-direction: column;
+      display: flex;
+      justify-content: space-evenly;
+    }
+
+    .teamContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 38px;
+    }
+
+    .teamsContainer {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+
+
+    }
+
+    .cardContainer {
+      background-image: url(./assets/images/1.webp);
+      color: white;
+
+    }
+
+    .modal-header,
+    .modal-footer {
+      background-image: url(./assets/images/1.webp);
+      color: white;
+
+    }
+
+    .team-name {
+      margin-top: 8px;
+    }
+
+    .modal-body {
+      background: #56042c;
+    }
+
+    .slash {
+      margin: 2px 4px 0 4px;
+    }
+
+    strong {
+      color: #Fec310;
+    }
+
+    .logo {
+      background-image: url(./assets/images/2.jpeg);
+      background-repeat: round;
+      height: 17em;
+      margin-top: -90px;
+    }
+
+    .table {
+      color: white;
+    }
+  </style>
 </head>
 
 <body>
-  <div class="container mt-5">
+  <div class="container">
+    <div class="logo"></div>
     <div id="app">
 
       <div>
         <div class="row text-center">
-          <div class="col-12 mt-5">
-            <button type="button" v-on:click="getPredictions" class="btn btn-secondary" data-bs-toggle="modal"
+          <div class=" ">
+            <button type="button" v-on:click="getPredictions" class="customeBtn" data-bs-toggle="modal"
               data-bs-target="#ModalPredictions" style="font-size: 25px;">
               Predictions
             </button>
           </div>
-          <div class="col-12 mt-5 mb-5">
-            <button type="button" v-on:click="getMatch" class="btn btn-secondary" data-bs-toggle="modal"
+          <div class=" ">
+            <button type="button" v-on:click="getMatch" class="customeBtn" data-bs-toggle="modal"
               data-bs-target="#ModalMatches" style="font-size: 25px;">
               Matches
             </button>
-            <div class="col-12 mt-5 mb-5">
-              <button type="button" v-on:click="getUsers" class="bg-yellow-400" data-bs-toggle="modal"
+            <div class="">
+              <button type="button" v-on:click="getUsers" class="customeBtn" data-bs-toggle="modal"
                 data-bs-target="#ModalUsers" style="font-size: 25px;">
                 Users
               </button>
             </div>
+          </div>
+          <div class=" ">
+            <button type="button" v-on:click="getPredictions" class="customeBtn" data-bs-toggle="modal"
+              data-bs-target="#ModalPredictions" style="font-size: 25px;">
+              Table
+            </button>
           </div>
         </div>
 
@@ -66,30 +146,25 @@
 
                 <div v-if="predictionsList">
                   <div v-for="item in predictionsList">
-                    <div class="card w-100 mt-5">
-                      <div class="card-body cardst">
-                        <h5 class="card-title"></h5>
-                        <div class="row">
-                          <div class="col-4 text-left">
-                            <div style=" text-align: left;">
-                              <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team1Id+'.webp'" /> </h5>
-                              <span>{{item.team1Name}}</span>
-                            </div>
+                    <div class="card w-100">
+                      <div class="card-body cardst cardContainer">
+                        <div class="teamsContainer">
+                          <div class="teamContainer">
+                            <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team1Id+'.webp'" /> </h5>
+                            <span class="team-name">{{item.team1Name}}</span>
                           </div>
-                          <div class="col-4" style=" display: inline-flex;">
+                          <div class="col-4" style=" display: inline-flex; margin-top: 10px;">
                             <input v-model="item.scoreTeam1" type="number" class="form-control input-default"
                               style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0"
                               ondrop="return false;" onpaste="return false;">
-                            <h1 class="ml-4 mr-4" style="margin: 0 10;">-</h1>
+                            <h1 class="slash" style="margin: 8 10 0 10;">-</h1>
                             <input v-model="item.scoreTeam2" type="number" class="form-control input-default"
                               style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0"
                               ondrop="return false;" onpaste="return false;">
                           </div>
-                          <div class="col-4 text-right">
-                            <div style=" text-align: right; ">
-                              <span>{{item.team2Name}}</span> <img class="rounded imgst"
-                                v-bind:src="'./assets/flags/'+ item.team2Id+'.webp'" /> </h5>
-                            </div>
+                          <div class="teamContainer">
+                            <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team2Id+'.webp'" />
+                            <span class="team-name">{{item.team2Name}}</span> </h5>
                           </div>
                         </div>
                         <div class="row mt-3 text-center">
@@ -135,31 +210,26 @@
 
                 <div v-if="matches">
                   <div v-for="item in matches">
-                    <div class="card w-100 mt-5">
-                      <div class="card-body cardst">
-                        <h5 class="card-title"></h5>
-                        <div class="row">
-                          <div class="col-4 text-left">
-                            <div style=" text-align: left;">
-                              <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team1Id+'.webp'" /> </h5>
-                              <span>{{item.team1Name}}</span>
-                            </div>
+                    <div class="card w-100">
+                      <div class="card-body cardst cardContainer">
+                        <div class="teamsContainer">
+                          <div class="teamContainer">
+                            <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team1Id+'.webp'" />
+                            <span class="team-name">{{item.team1Name}}</span>
                           </div>
-                          <div class="col-4" style=" display: inline-flex;">
+                          <div class="col-4" style=" display: inline-flex; margin-top: 10px;">
                             <input v-model="item.scoreTeam1" type="number" class="form-control input-default"
                               style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0">
-                            <h1 class="ml-4 mr-4" style="margin: 0 10;">-</h1>
+                            <h1 class="slash" style="margin: 8 10 0 10;">-</h1>
                             <input v-model="item.scoreTeam2" type="number" class="form-control input-default"
                               style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0">
                           </div>
-                          <div class="col-4 text-right">
-                            <div style=" text-align: right; ">
-                              <span>{{item.team2Name}}</span> <img class="rounded imgst"
-                                v-bind:src="'./assets/flags/'+ item.team2Id+'.webp'" /> </h5>
-                            </div>
+                          <div class="teamContainer">
+                            <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team2Id+'.webp'" />
+                            <span class="team-name">{{item.team2Name}}</span>
                           </div>
                         </div>
-                        <div class="row mt-3">
+                        <div class="row mt-3" style="text-align: center;">
                           <!-- <div class="col-6">
                             <button v-bind:id="'r'+item.id" class="btn btn-success mb-2"
                               v-on:click="UpdateMatch(maches.indexOf(item))">Review</button>
