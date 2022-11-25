@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Prediction Abadan City</title>
+  <!-- Manifest.json-->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <!--
+      Material design script
+      Sources:
+      1- getmdl.io
+    -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="/assets/css/libs/material.min.css">
+  <!--
+      Our Custom css if needed which has been done throught the course
+    -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="container mt-5">
+    <div id="app">
+
+      <div>
+        <div class="row text-center">
+          <div class="col-12 mt-5">
+            <button type="button" v-on:click="getPredictions" class="btn btn-secondary" data-bs-toggle="modal"
+              data-bs-target="#ModalPredictions" style="font-size: 25px;">
+              Predictions
+            </button>
+          </div>
+          <div class="col-12 mt-5 mb-5">
+            <button type="button" v-on:click="getMatch" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ModalMatches"
+              style="font-size: 25px;">
+              Matches
+            </button>
+            <div class="col-12 mt-5 mb-5">
+              <button type="button" v-on:click="getUsers" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ModalUsers"
+                style="font-size: 25px;">
+                Users
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="modal fade" id="ModalPredictions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+          aria-labelledby="ModalPredictionsLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="ModalPredictionsLabel">Predictions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+
+                <div v-if="predictionsList">
+                  <div v-for="item in predictionsList">
+                    <div class="card w-100 mt-5">
+                      <div class="card-body cardst">
+                        <h5 class="card-title"></h5>
+                        <div class="row">
+                          <div class="col-4 text-left">
+                            <div style=" text-align: left;">
+                              <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team1Id+'.webp'" /> </h5>
+                              <span>{{item.team1Name}}</span>
+                            </div>
+                          </div>
+                          <div class="col-4" style=" display: inline-flex;">
+                            <input v-model="item.scoreTeam1" type="number" class="form-control input-default"
+                              style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0" ondrop="return false;" onpaste="return false;">
+                            <h1 class="ml-4 mr-4" style="margin: 0 10;">-</h1>
+                            <input v-model="item.scoreTeam2" type="number" class="form-control input-default"
+                              style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0"  ondrop="return false;" onpaste="return false;">
+                          </div>
+                          <div class="col-4 text-right">
+                            <div style=" text-align: right; ">
+                              <span>{{item.team2Name}}</span> <img class="rounded imgst"
+                                v-bind:src="'./assets/flags/'+ item.team2Id+'.webp'" /> </h5>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row mt-3 text-center">
+                          <div class="col-12">
+                            <button v-bind:id="'b'+item.id" class="btn btn-success mb-2"
+                              v-on:click="UpdatePredictions(predictionsList.indexOf(item))">Submit</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div v-else>
+                  <div class="d-flex align-items-center">
+                    <strong>Loading...</strong>
+                    <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+                  </div>
+                </div>
+
+
+
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+     
+
+
+        <div class="modal fade" id="ModalMatches" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+          aria-labelledby="ModalMatchesLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="ModalMatchesLabel">Matches</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+
+                <div v-if="matches">
+                  <div v-for="item in matches">
+                    <div class="card w-100 mt-5">
+                      <div class="card-body cardst">
+                        <h5 class="card-title"></h5>
+                        <div class="row">
+                          <div class="col-4 text-left">
+                            <div style=" text-align: left;">
+                              <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team1Id+'.webp'" /> </h5> <span>{{item.team1Name}}</span>
+                            </div>
+                          </div>
+                          <div class="col-4" style=" display: inline-flex;">
+                            <input v-model="item.scoreTeam1" type="number" class="form-control input-default"
+                              style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0">
+                            <h1 class="ml-4 mr-4" style="margin: 0 10;">-</h1>
+                            <input v-model="item.scoreTeam2" type="number" class="form-control input-default"
+                              style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0">
+                          </div>
+                          <div class="col-4 text-right">
+                            <div style=" text-align: right; ">
+                              <span>{{item.team2Name}}</span> <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team2Id+'.webp'" /> </h5>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row mt-3">
+                          <!-- <div class="col-6">
+                            <button v-bind:id="'r'+item.id" class="btn btn-success mb-2"
+                              v-on:click="UpdateMatch(maches.indexOf(item))">Review</button>
+                          </div> -->
+                          <div class="col-12">
+                            <button v-bind:id="'bm'+item.id" class="btn btn-success mb-2"
+                              v-on:click="UpdateMatch(maches.indexOf(item))">Submit</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div v-else>
+                  <div class="d-flex align-items-center">
+                    <strong>Loading...</strong>
+                    <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+        <div class="modal fade" id="ModalUsers" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+          aria-labelledby="ModalUsersLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="ModalUsersLabel">Users</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+
+                <div v-if="users">
+                  <table class="table  table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">NameEn</th>
+                        <th scope="col">NameFa</th>
+                        <th scope="col">UserName</th>
+                        <th scope="col">Pass</th>
+                        <th scope="col">Score</th>
+                        <th scope="col">Active</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="item in users">
+                        <th scope="row">{{item.id}}</th>
+                        <td>{{item.nameEn}}</td>
+                        <td>{{item.nameFa}}</td>
+                        <td>{{item.userName}}</td>
+                        <td>******</td>
+                        <td>{{item.score}}</td>
+                        <td>{{item.active}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div v-else>
+                  <div class="d-flex align-items-center">
+                    <strong>Loading...</strong>
+                    <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+                  </div>
+                </div>
+
+ 
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
+
+    <a href="#" id="fab"
+      class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-color--cyan">
+      <i class="material-icons">add</i>
+    </a>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+      crossorigin="anonymous"></script>
+
+    <script src="/app.js"></script>
+</body>
+
+</html>
