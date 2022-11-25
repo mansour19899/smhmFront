@@ -14,7 +14,9 @@
   ],
   "author": "Iman Madaeny",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "tailwindcss": "^3.2.4"
+  },
   "devDependencies": {
     "http-server": "^0.10.0"
   }

@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="/assets/css/libs/material.min.css">
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
   <!--
       Our Custom css if needed which has been done throught the course
     -->
@@ -38,13 +39,13 @@
             </button>
           </div>
           <div class="col-12 mt-5 mb-5">
-            <button type="button" v-on:click="getMatch" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ModalMatches"
-              style="font-size: 25px;">
+            <button type="button" v-on:click="getMatch" class="btn btn-secondary" data-bs-toggle="modal"
+              data-bs-target="#ModalMatches" style="font-size: 25px;">
               Matches
             </button>
             <div class="col-12 mt-5 mb-5">
-              <button type="button" v-on:click="getUsers" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ModalUsers"
-                style="font-size: 25px;">
+              <button type="button" v-on:click="getUsers" class="bg-yellow-400" data-bs-toggle="modal"
+                data-bs-target="#ModalUsers" style="font-size: 25px;">
                 Users
               </button>
             </div>
@@ -77,10 +78,12 @@
                           </div>
                           <div class="col-4" style=" display: inline-flex;">
                             <input v-model="item.scoreTeam1" type="number" class="form-control input-default"
-                              style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0" ondrop="return false;" onpaste="return false;">
+                              style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0"
+                              ondrop="return false;" onpaste="return false;">
                             <h1 class="ml-4 mr-4" style="margin: 0 10;">-</h1>
                             <input v-model="item.scoreTeam2" type="number" class="form-control input-default"
-                              style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0"  ondrop="return false;" onpaste="return false;">
+                              style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0"
+                              ondrop="return false;" onpaste="return false;">
                           </div>
                           <div class="col-4 text-right">
                             <div style=" text-align: right; ">
@@ -117,7 +120,7 @@
           </div>
         </div>
 
-     
+
 
 
         <div class="modal fade" id="ModalMatches" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -138,7 +141,8 @@
                         <div class="row">
                           <div class="col-4 text-left">
                             <div style=" text-align: left;">
-                              <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team1Id+'.webp'" /> </h5> <span>{{item.team1Name}}</span>
+                              <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team1Id+'.webp'" /> </h5>
+                              <span>{{item.team1Name}}</span>
                             </div>
                           </div>
                           <div class="col-4" style=" display: inline-flex;">
@@ -150,7 +154,8 @@
                           </div>
                           <div class="col-4 text-right">
                             <div style=" text-align: right; ">
-                              <span>{{item.team2Name}}</span> <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team2Id+'.webp'" /> </h5>
+                              <span>{{item.team2Name}}</span> <img class="rounded imgst"
+                                v-bind:src="'./assets/flags/'+ item.team2Id+'.webp'" /> </h5>
                             </div>
                           </div>
                         </div>
@@ -230,7 +235,7 @@
                   </div>
                 </div>
 
- 
+
 
               </div>
               <div class="modal-footer">
