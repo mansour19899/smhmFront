@@ -20,6 +20,7 @@ const app = Vue.createApp({
       predictionsList: null,
       allPredictionsList: null,
       title: "",
+      indexOfPrediction: 0,
       userNameShow: "",
       addd: "https://localhost:7233",
       allow: true,
@@ -37,6 +38,7 @@ const app = Vue.createApp({
     },
     async getPredictions() {
       if (this.allow) {
+        this.allPredictionsList=null;
         await fetch(this.addd + "/api/predictions/" + this.userId)
           .then((res) => res.json())
           .then((data) => (this.predictionsList = data))
@@ -55,13 +57,17 @@ const app = Vue.createApp({
     },
     async getAllPredictions(index) {
       if (this.allow) {
+        console.log(index);
         console.log(this.predictionsList[index].matchId);
-
-        await fetch(this.addd + "/api/AllPredictions/" + this.predictionsList[index].matchId)
+         this.indexOfPrediction=index;
+         await fetch(this.addd + "/api/AllPredictions/" + this.predictionsList[index].matchId)
           .then((res) => res.json())
           .then((data) => (this.allPredictionsList = data))
           .then(console.log(this.allPredictionsList))
-          .catch((err) => console.log(err.message));
+         .catch((err) => console.log(err.message));
+
+
+
       }
     },
     async UpdatePredictions(index) {

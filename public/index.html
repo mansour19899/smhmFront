@@ -72,6 +72,7 @@
 
     .team-name {
       margin-top: 8px;
+      color: white;
     }
 
     .modal-body {
@@ -144,50 +145,97 @@
               <div class="modal-body">
 
                 <div v-if="predictionsList">
-                  <div v-for="item in predictionsList">
-                    <div class="card w-100">
-                      <div class="card-body cardst cardContainer">
-                        <div class="row" style="margin-bottom:-30px;">
-                          <div class="col-2"></div>
-                          <div class="col-8 text-center">
-                            <h3>20 Novmber</h3>
+                  <div v-if="allPredictionsList">
+                    <button v-on:click="allPredictionsList=null" type="button" class="btn btn-secondary">Back</button>
+                    <div class="teamsContainer">
+                      <div class="teamContainer">
+                        <img class="rounded imgst" v-bind:src="'./assets/flags/'+ predictionsList[indexOfPrediction].team1Id+'.webp'" /> </h5>
+                        <span class="team-name">{{predictionsList[indexOfPrediction].team1Name}}</span>
+                      </div>
+                      <div class="col-4" style=" display: inline-flex; margin-top: 10px;">
+                        <input v-model="predictionsList[indexOfPrediction].scoreTeam1" type="number" class="form-control input-default"
+                          style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0"
+                          ondrop="return false;" onpaste="return false;">
+                        <h1 class="slash" style="margin: 8 10 0 10;">-</h1>
+                        <input v-model="predictionsList[indexOfPrediction].scoreTeam2" type="number" class="form-control input-default"
+                          style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0"
+                          ondrop="return false;" onpaste="return false;">
+                      </div>
+                      <div class="teamContainer">
+                        <img class="rounded imgst" v-bind:src="'./assets/flags/'+ predictionsList[indexOfPrediction].team2Id+'.webp'" />
+                        <span class="team-name">{{predictionsList[indexOfPrediction].team2Name}}</span> </h5>
+                      </div>
+                    </div>
+
+                    <table class="table  table-hover">
+                      <thead>
+                        <tr>
+                          <th scope="col">Id</th>
+                          <th scope="col">NameEn</th>
+                          <th scope="col">NameFa</th>
+                          <th scope="col"></th>
+                          <th scope="col"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="item in allPredictionsList">
+                          <th scope="row">{{item.Id}}</th>
+                          <td>{{item.NameEn}}</td>
+                          <td>{{item.NameFa}}</td>
+                          <td>{{item.ScoreTeam1}}</td>
+                          <td>{{item.ScoreTeam2}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div v-else>
+                    <div v-for="item in predictionsList">
+                      <div class="card w-100">
+                        <div class="card-body cardst cardContainer">
+                          <div class="row" style="margin-bottom:-30px;">
+                            <div class="col-2"></div>
+                            <div class="col-8 text-center">
+                              <h3>20 Novmber</h3>
+                            </div>
+                            <div class="col-2 text-end">
+                              <span v-if="item.done" class="badge bg-success">Done</span>
+                            </div>
                           </div>
-                          <div class="col-2 text-end">
-                            <span v-if="item.done" class="badge bg-success">Done</span></div>
+
+                          <div class="teamsContainer">
+                            <div class="teamContainer">
+                              <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team1Id+'.webp'" /> </h5>
+                              <span class="team-name">{{item.team1Name}}</span>
+                            </div>
+                            <div class="col-4" style=" display: inline-flex; margin-top: 10px;">
+                              <input v-model="item.scoreTeam1" type="number" class="form-control input-default"
+                                style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0"
+                                ondrop="return false;" onpaste="return false;">
+                              <h1 class="slash" style="margin: 8 10 0 10;">-</h1>
+                              <input v-model="item.scoreTeam2" type="number" class="form-control input-default"
+                                style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0"
+                                ondrop="return false;" onpaste="return false;">
+                            </div>
+                            <div class="teamContainer">
+                              <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team2Id+'.webp'" />
+                              <span class="team-name">{{item.team2Name}}</span> </h5>
+                            </div>
                           </div>
-                           
-                        <div class="teamsContainer">
-                          <div class="teamContainer">
-                            <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team1Id+'.webp'" /> </h5>
-                            <span class="team-name">{{item.team1Name}}</span>
-                          </div>
-                          <div class="col-4" style=" display: inline-flex; margin-top: 10px;">
-                            <input v-model="item.scoreTeam1" type="number" class="form-control input-default"
-                              style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0"
-                              ondrop="return false;" onpaste="return false;">
-                            <h1 class="slash" style="margin: 8 10 0 10;">-</h1>
-                            <input v-model="item.scoreTeam2" type="number" class="form-control input-default"
-                              style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0"
-                              ondrop="return false;" onpaste="return false;">
-                          </div>
-                          <div class="teamContainer">
-                            <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team2Id+'.webp'" />
-                            <span class="team-name">{{item.team2Name}}</span> </h5>
-                          </div>
-                        </div>
-                        <div class="row mt-3 text-center">
-                          <div v-if="item.locked" class="col-12">
-                            <button v-bind:id="'bt'+item.id" class="btn btn-success mb-2"
-                              v-on:click="getAllPredictions(predictionsList.indexOf(item))">See Predictions</button>
-                          </div>
-                          <div v-else class="col-12">
-                            <button v-bind:id="'b'+item.id" class="btn btn-success mb-2"
-                              v-on:click="UpdatePredictions(predictionsList.indexOf(item))">Submit</button>
+                          <div class="row mt-3 text-center">
+                            <div v-if="item.locked" class="col-12">
+                              <button v-bind:id="'bt'+item.id" class="btn btn-success mb-2"
+                                v-on:click="getAllPredictions(predictionsList.indexOf(item))">See Predictions</button>
+                            </div>
+                            <div v-else class="col-12">
+                              <button v-bind:id="'b'+item.id" class="btn btn-success mb-2"
+                                v-on:click="UpdatePredictions(predictionsList.indexOf(item))">Submit</button>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
+
                 </div>
                 <div v-else>
                   <div class="d-flex align-items-center text-warning">
@@ -256,7 +304,7 @@
                   </div>
                 </div>
                 <div v-else>
-                  <div class="d-flex align-items-center text-warning" >
+                  <div class="d-flex align-items-center text-warning">
                     <strong>Loading...</strong>
                     <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
                   </div>
