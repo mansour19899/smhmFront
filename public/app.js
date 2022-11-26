@@ -14,13 +14,14 @@ if ("serviceWorker" in navigator) {
 const app = Vue.createApp({
   data() {
     return {
-      userId: 9,
+      userId: 2,
       matches: null,
       users: null,
       predictionsList: null,
+      allPredictionsList: null,
       title: "",
       userNameShow: "",
-      addd: "https://smhm.azurewebsites.net",
+      addd: "https://localhost:7233",
       allow: true,
     };
   },
@@ -41,8 +42,6 @@ const app = Vue.createApp({
           .then((data) => (this.predictionsList = data))
           .then(console.log(this.predictionsList))
           .catch((err) => console.log(err.message));
-
-        this.userNameShow = this.users.find((d) => d.id == this.userId).nameEn;
       }
     },
     async getUsers() {
@@ -51,6 +50,17 @@ const app = Vue.createApp({
           .then((res) => res.json())
           .then((data) => (this.users = data))
           .then(console.log(this.users))
+          .catch((err) => console.log(err.message));
+      }
+    },
+    async getAllPredictions(index) {
+      if (this.allow) {
+        console.log(this.predictionsList[index].matchId);
+
+        await fetch(this.addd + "/api/AllPredictions/" + this.predictionsList[index].matchId)
+          .then((res) => res.json())
+          .then((data) => (this.allPredictionsList = data))
+          .then(console.log(this.allPredictionsList))
           .catch((err) => console.log(err.message));
       }
     },
@@ -80,6 +90,7 @@ const app = Vue.createApp({
           .then((response) => response.json())
           .catch((err) => console.log(err));
 
+        this.predictionsList[index].done = true;
         btnSend.innerHTML = "Updated";
         btnSend.disabled = false;
       }

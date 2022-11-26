@@ -100,7 +100,7 @@
 </head>
 
 <body>
-  <div class="container">
+  <div class="container" style="max-width: 600px;">
     <div class="logo"></div>
     <div id="app">
       <div>
@@ -147,6 +147,15 @@
                   <div v-for="item in predictionsList">
                     <div class="card w-100">
                       <div class="card-body cardst cardContainer">
+                        <div class="row" style="margin-bottom:-30px;">
+                          <div class="col-2"></div>
+                          <div class="col-8 text-center">
+                            <h3>20 Novmber</h3>
+                          </div>
+                          <div class="col-2 text-end">
+                            <span v-if="item.done" class="badge bg-success">Done</span></div>
+                          </div>
+                           
                         <div class="teamsContainer">
                           <div class="teamContainer">
                             <img class="rounded imgst" v-bind:src="'./assets/flags/'+ item.team1Id+'.webp'" /> </h5>
@@ -167,7 +176,11 @@
                           </div>
                         </div>
                         <div class="row mt-3 text-center">
-                          <div class="col-12">
+                          <div v-if="item.locked" class="col-12">
+                            <button v-bind:id="'bt'+item.id" class="btn btn-success mb-2"
+                              v-on:click="getAllPredictions(predictionsList.indexOf(item))">See Predictions</button>
+                          </div>
+                          <div v-else class="col-12">
                             <button v-bind:id="'b'+item.id" class="btn btn-success mb-2"
                               v-on:click="UpdatePredictions(predictionsList.indexOf(item))">Submit</button>
                           </div>
@@ -177,7 +190,7 @@
                   </div>
                 </div>
                 <div v-else>
-                  <div class="d-flex align-items-center">
+                  <div class="d-flex align-items-center text-warning">
                     <strong>Loading...</strong>
                     <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
                   </div>
@@ -243,7 +256,7 @@
                   </div>
                 </div>
                 <div v-else>
-                  <div class="d-flex align-items-center">
+                  <div class="d-flex align-items-center text-warning" >
                     <strong>Loading...</strong>
                     <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
                   </div>
@@ -298,7 +311,7 @@
                   </table>
                 </div>
                 <div v-else>
-                  <div class="d-flex align-items-center">
+                  <div class="d-flex align-items-center text-warning">
                     <strong>Loading...</strong>
                     <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
                   </div>
