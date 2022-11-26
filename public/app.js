@@ -19,6 +19,7 @@ const app = Vue.createApp({
       users: null,
       predictionsList: null,
       allPredictionsList: null,
+      results: null,
       title: "",
       indexOfPrediction: 0,
       userNameShow: "",
@@ -55,6 +56,15 @@ const app = Vue.createApp({
           .catch((err) => console.log(err.message));
       }
     },
+    async getResults() {
+      if (this.allow) {
+        await fetch(this.addd + "/api/Result")
+          .then((res) => res.json())
+          .then((data) => (this.results = data))
+          .then(console.log(this.results))
+          .catch((err) => console.log(err.message));
+      }
+    },
     async getAllPredictions(index) {
       if (this.allow) {
         console.log(index);
@@ -65,9 +75,16 @@ const app = Vue.createApp({
           .then((data) => (this.allPredictionsList = data))
           .then(console.log(this.allPredictionsList))
          .catch((err) => console.log(err.message));
-
-
-
+      }
+    },
+    async getAllPredictionsForSet(index) {
+      if (this.allow) {
+        console.log(index);
+         await fetch(this.addd + "/api/AllPredictions/" + index)
+          .then((res) => res.json())
+          .then((data) => (this.allPredictionsList = data))
+          .then(console.log(this.allPredictionsList))
+         .catch((err) => console.log(err.message));
       }
     },
     async UpdatePredictions(index) {
@@ -99,6 +116,35 @@ const app = Vue.createApp({
         this.predictionsList[index].done = true;
         btnSend.innerHTML = "Updated";
         btnSend.disabled = false;
+      }
+    },
+    async UpdateAllPredictions() {
+      if (this.allow) {
+        
+        // await console.log("#b" + this.predictionsList[index].id);
+        // const btnSend = document.querySelector(
+        //   "#b" + this.predictionsList[index].id
+        // );
+        // btnSend.innerHTML = "Sending...";
+        // btnSend.disabled = true;
+
+        let _data = this.allPredictionsList;
+        let _res = "";
+        console.log(_data);
+        await fetch(
+          this.addd + "/api/allPredictions/" + 1,
+          {
+            method: "PUT",
+            body: JSON.stringify(_data),
+            headers: { "Content-type": "application/json; charset=UTF-8" },
+          }
+        )
+          .then((response) => response.json())
+          .catch((err) => console.log(err));
+
+        // this.predictionsList[index].done = true;
+        // btnSend.innerHTML = "Updated";
+        // btnSend.disabled = false;
       }
     },
     async UpdateMatch(index) {
