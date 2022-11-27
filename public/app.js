@@ -45,7 +45,7 @@ const app = Vue.createApp({
       pass: "",
       indexOfPrediction: 0,
       userNameShow: "",
-      addd: "https://localhost:7233",
+      addd: "https://smhm.azurewebsites.net",
       allow: false,
     };
   },
@@ -84,6 +84,11 @@ const app = Vue.createApp({
       }
       
  
+    },
+     selectedText(index) {
+      if (this.allow) {
+         console.log(index);
+      }
     },
     async getMatch() {
       if (this.allow) {
@@ -251,7 +256,7 @@ const app = Vue.createApp({
         const btnSend = document.querySelector("#bm" + this.matches[index].id);
         btnSend.innerHTML = "Sending...";
         btnSend.disabled = true;
-
+        this.matches[index].team1Id=this.userLogin.id;
         let _data = this.matches[index];
         let _res = "";
         console.log(_data);
