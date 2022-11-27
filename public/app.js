@@ -32,12 +32,23 @@ const app = Vue.createApp({
     async Login() {
       this.userLogin=null;
       console.log(this.pass);
+      const btnLog= document.querySelector("#btnLogin");
+      btnLog.innerHTML = "Please Wait...";
+      btnLog.disabled = true;
       await fetch(this.addd + "/api/User/"+ this.pass)
       .then((res) => res.json())
       .then((data) => (this.userLogin = data))
-      .then(this.allow=true)
       .catch((err) => console.log(err.message));
+      if(this.userLogin.status==404){
+        this.allow=false;
+        alert('Incorrect PIN');
+      }
+      else{
+        this.allow=true;
+      }
       this.pass="";
+      btnLog.innerHTML = "Login";
+      btnLog.disabled = false;
       console.log(this.userLogin);
     },
     async getMatch() {
