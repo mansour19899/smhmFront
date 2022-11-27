@@ -13,22 +13,22 @@ if ("serviceWorker" in navigator) {
 
 async function Errorsweet(message) {
   Swal.fire({
-      position: 'center',
-      icon: 'error',
-      title: message,
-      showConfirmButton: false,
-      timer: 3500
-  })
+    position: "center",
+    icon: "error",
+    title: message,
+    showConfirmButton: false,
+    timer: 3500,
+  });
 }
 
 async function Successsweet(message) {
   Swal.fire({
-      position: 'center',
-      icon: 'success',
-      title: message,
-      showConfirmButton: false,
-      timer: 3500
-  })
+    position: "center",
+    icon: "success",
+    title: message,
+    showConfirmButton: false,
+    timer: 3500,
+  });
 }
 
 const app = Vue.createApp({
@@ -51,74 +51,68 @@ const app = Vue.createApp({
   },
   methods: {
     async Login() {
-      this.userLogin=null;
-      if (isNaN(this.pass)){
-        Errorsweet('Please Provide the input as a number');
+      this.userLogin = null;
+      if (isNaN(this.pass)) {
+        Errorsweet("Please Provide the input as a number");
         return false;
-     }
-
-      if(this.pass.trim()=="")
-      {
-
       }
-      else{
-        const btnLog= document.querySelector("#btnLogin");
+
+      if (this.pass.trim() == "") {
+      } else {
+        const btnLog = document.querySelector("#btnLogin");
         btnLog.innerHTML = "Please Wait...";
         btnLog.disabled = true;
-        await fetch(this.addd + "/api/User/"+ this.pass)
-        .then((res) => res.json())
-        .then((data) => (this.userLogin = data))
-        .catch((err) => Errorsweet('Check your Internet Conncetion'));
-  
-        if(this.userLogin.status==404){
-          this.allow=false;
-         Errorsweet('Incorrect PIN');
+        await fetch(this.addd + "/api/User/" + this.pass)
+          .then((res) => res.json())
+          .then((data) => (this.userLogin = data))
+          .catch((err) => Errorsweet("Check your Internet Conncetion"));
+
+        if (this.userLogin.id == -1) {
+          this.allow = false;
+          Errorsweet("Incorrect PIN");
+        } else {
+          this.allow = true;
         }
-        else{
-          this.allow=true;
-        }
-        this.pass="";
+        this.pass = "";
         btnLog.innerHTML = "Login";
         btnLog.disabled = false;
         console.log(this.userLogin);
       }
-      
- 
     },
-     selectedText(index) {
+    selectedText(index) {
       if (this.allow) {
-         console.log(index);
+        console.log(index);
       }
     },
     async getMatch() {
       if (this.allow) {
-        this.allNoPredictions=null;
-        this.allPredictionsList=null;
+        this.allNoPredictions = null;
+        this.allPredictionsList = null;
         await fetch(this.addd + "/api/Match")
           .then((res) => res.json())
           .then((data) => (this.matches = data))
           .then(console.log(this.matches))
-          .catch((err) => Errorsweet('Check your Internet Conncetion'));
+          .catch((err) => Errorsweet("Check your Internet Conncetion"));
       }
     },
     async getPredictions() {
       if (this.allow) {
-        this.allPredictionsList=null;
+        this.allPredictionsList = null;
         await fetch(this.addd + "/api/predictions/" + this.userLogin.id)
           .then((res) => res.json())
           .then((data) => (this.predictionsList = data))
           .then(console.log(this.predictionsList))
-          .catch((err) => Errorsweet('Check your Internet Conncetion'));
+          .catch((err) => Errorsweet("Check your Internet Conncetion"));
       }
     },
     async getHistoryPredictions() {
       if (this.allow) {
-        this.allPredictionsList=null;
+        this.allPredictionsList = null;
         await fetch(this.addd + "/api/HistoryPredictions/" + this.userLogin.id)
           .then((res) => res.json())
           .then((data) => (this.predictionsList = data))
           .then(console.log(this.predictionsList))
-          .catch((err) => Errorsweet('Check your Internet Conncetion'));
+          .catch((err) => Errorsweet("Check your Internet Conncetion"));
       }
     },
     async getUsers() {
@@ -127,7 +121,7 @@ const app = Vue.createApp({
           .then((res) => res.json())
           .then((data) => (this.users = data))
           .then(console.log(this.users))
-          .catch((err) => Errorsweet('Check your Internet Conncetion'));
+          .catch((err) => Errorsweet("Check your Internet Conncetion"));
       }
     },
     async getResults() {
@@ -136,39 +130,43 @@ const app = Vue.createApp({
           .then((res) => res.json())
           .then((data) => (this.results = data))
           .then(console.log(this.results))
-          .catch((err) => Errorsweet('Check your Internet Conncetion'));
+          .catch((err) => Errorsweet("Check your Internet Conncetion"));
       }
     },
     async getAllPredictions(index) {
       if (this.allow) {
         console.log(index);
         console.log(this.predictionsList[index].matchId);
-         this.indexOfPrediction=index;
-         await fetch(this.addd + "/api/AllPredictions/" + this.predictionsList[index].matchId)
+        this.indexOfPrediction = index;
+        await fetch(
+          this.addd +
+            "/api/AllPredictions/" +
+            this.predictionsList[index].matchId
+        )
           .then((res) => res.json())
           .then((data) => (this.allPredictionsList = data))
           .then(console.log(this.allPredictionsList))
-         .catch((err) => Errorsweet('Check your Internet Conncetion'));
+          .catch((err) => Errorsweet("Check your Internet Conncetion"));
       }
     },
     async getAllPredictionsForSet(index) {
       if (this.allow) {
         console.log(index);
-         await fetch(this.addd + "/api/AllPredictions/" + index)
+        await fetch(this.addd + "/api/AllPredictions/" + index)
           .then((res) => res.json())
           .then((data) => (this.allPredictionsList = data))
           .then(console.log(this.allPredictionsList))
-         .catch((err) => Errorsweet('Check your Internet Conncetion'));
+          .catch((err) => Errorsweet("Check your Internet Conncetion"));
       }
     },
     async getAllNoPredictions(index) {
       if (this.allow) {
         console.log(index);
-         await fetch(this.addd + "/api/GetAllNoPredictions/" + index)
+        await fetch(this.addd + "/api/GetAllNoPredictions/" + index)
           .then((res) => res.json())
           .then((data) => (this.allNoPredictions = data))
           .then(console.log(this.allNoPredictions))
-         .catch((err) => Errorsweet('Check your Internet Conncetion'));
+          .catch((err) => Errorsweet("Check your Internet Conncetion"));
       }
     },
     async UpdatePredictions(index) {
@@ -195,68 +193,77 @@ const app = Vue.createApp({
           }
         )
           .then((response) => console.log(response))
-          .catch((err) => Errorsweet('Check your Internet Conncetion'));
+          .catch((err) => Errorsweet("Check your Internet Conncetion"));
 
         this.predictionsList[index].done = true;
         btnSend.innerHTML = "Updated";
         btnSend.disabled = false;
-        Successsweet('Prediction updated.');
+        Successsweet("Prediction updated.");
+      }
+    },
+    async ConfirmUpdateAllPredictions() {
+      if (this.allow) {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Update it!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.UpdateAllPredictions();
+          }
+        });
       }
     },
     async UpdateAllPredictions() {
       if (this.allow) {
-        
-        // await console.log("#b" + this.predictionsList[index].id);
-        // const btnSend = document.querySelector(
-        //   "#b" + this.predictionsList[index].id
-        // );
-        // btnSend.innerHTML = "Sending...";
-        // btnSend.disabled = true;
+        const btnSend = document.querySelector("#btnAllUpdate");
+        btnSend.innerHTML = "Sending...";
+        btnSend.disabled = true;
 
         let _data = this.allPredictionsList;
         let _res = "";
         console.log(_data);
-        await fetch(
-          this.addd + "/api/allPredictions/" + 1,
-          {
-            method: "PUT",
-            body: JSON.stringify(_data),
-            headers: { "Content-type": "application/json; charset=UTF-8" },
-          }
-        )
+        await fetch(this.addd + "/api/allPredictions/" + 1, {
+          method: "PUT",
+          body: JSON.stringify(_data),
+          headers: { "Content-type": "application/json; charset=UTF-8" },
+        })
           .then((response) => console.log(response))
-          .catch((err) => Errorsweet('Check your Internet Conncetion'));
-          this.allPredictionsList=null;
-        // this.predictionsList[index].done = true;
-        // btnSend.innerHTML = "Updated";
-        // btnSend.disabled = false;
+          .catch((err) => Errorsweet("Check your Internet Conncetion"));
+        this.allPredictionsList = null;
+        this.predictionsList[index].done = true;
+        btnSend.innerHTML = "Updated";
+        btnSend.disabled = false;
       }
     },
     async ConfirmUpdateMatch(index) {
       if (this.allow) {
         Swal.fire({
-          title: 'Are you sure?',
+          title: "Are you sure?",
           text: "You won't be able to revert this!",
-          icon: 'warning',
+          icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, Update it!'
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Update it!",
         }).then((result) => {
           if (result.isConfirmed) {
-            this.UpdateMatch(index); 
+            this.UpdateMatch(index);
           }
-        })
+        });
       }
     },
     async UpdateMatch(index) {
       if (this.allow) {
-
         await console.log("#bm" + this.matches[index].id);
         const btnSend = document.querySelector("#bm" + this.matches[index].id);
         btnSend.innerHTML = "Sending...";
         btnSend.disabled = true;
-        this.matches[index].team1Id=this.userLogin.id;
+        this.matches[index].team1Id = this.userLogin.id;
         let _data = this.matches[index];
         let _res = "";
         console.log(_data);
@@ -266,12 +273,12 @@ const app = Vue.createApp({
           body: JSON.stringify(_data),
           headers: { "Content-type": "application/json; charset=UTF-8" },
         })
-        .then((response) => console.log(response))
-        .catch((err) => console.log(err));
+          .then((response) => console.log(response))
+          .catch((err) => console.log(err));
 
         btnSend.innerHTML = "Updated";
         btnSend.disabled = false;
-        Successsweet('Match updated.');
+        Successsweet("Match updated.");
       }
     },
   },
