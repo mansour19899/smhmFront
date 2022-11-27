@@ -39,12 +39,13 @@ const app = Vue.createApp({
       userLogin: null,
       predictionsList: null,
       allPredictionsList: null,
+      allNoPredictions: null,
       results: null,
       title: "",
       pass: "",
       indexOfPrediction: 0,
       userNameShow: "",
-      addd: "https://smhm.azurewebsites.net",
+      addd: "https://localhost:7233",
       allow: false,
     };
   },
@@ -86,6 +87,8 @@ const app = Vue.createApp({
     },
     async getMatch() {
       if (this.allow) {
+        this.allNoPredictions=null;
+        this.allPredictionsList=null;
         await fetch(this.addd + "/api/Match")
           .then((res) => res.json())
           .then((data) => (this.matches = data))
@@ -153,6 +156,16 @@ const app = Vue.createApp({
          .catch((err) => Errorsweet('Check your Internet Conncetion'));
       }
     },
+    async getAllNoPredictions(index) {
+      if (this.allow) {
+        console.log(index);
+         await fetch(this.addd + "/api/GetAllNoPredictions/" + index)
+          .then((res) => res.json())
+          .then((data) => (this.allNoPredictions = data))
+          .then(console.log(this.allNoPredictions))
+         .catch((err) => Errorsweet('Check your Internet Conncetion'));
+      }
+    },
     async UpdatePredictions(index) {
       if (this.allow) {
         await console.log("#b" + this.predictionsList[index].id);
@@ -176,7 +189,7 @@ const app = Vue.createApp({
             headers: { "Content-type": "application/json; charset=UTF-8" },
           }
         )
-          .then((response) => response.json())
+          .then((response) => console.log(response))
           .catch((err) => Errorsweet('Check your Internet Conncetion'));
 
         this.predictionsList[index].done = true;
@@ -206,7 +219,7 @@ const app = Vue.createApp({
             headers: { "Content-type": "application/json; charset=UTF-8" },
           }
         )
-          .then((response) => response.json())
+          .then((response) => console.log(response))
           .catch((err) => Errorsweet('Check your Internet Conncetion'));
           this.allPredictionsList=null;
         // this.predictionsList[index].done = true;
@@ -214,8 +227,26 @@ const app = Vue.createApp({
         // btnSend.disabled = false;
       }
     },
+    async ConfirmUpdateMatch(index) {
+      if (this.allow) {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, Update it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.UpdateMatch(index); 
+          }
+        })
+      }
+    },
     async UpdateMatch(index) {
       if (this.allow) {
+
         await console.log("#bm" + this.matches[index].id);
         const btnSend = document.querySelector("#bm" + this.matches[index].id);
         btnSend.innerHTML = "Sending...";
@@ -230,11 +261,12 @@ const app = Vue.createApp({
           body: JSON.stringify(_data),
           headers: { "Content-type": "application/json; charset=UTF-8" },
         })
-          .then((response) => response.json())
-          .catch(Errorsweet('Check your Internet Conncetion'));
+        .then((response) => console.log(response))
+        .catch((err) => console.log(err));
 
         btnSend.innerHTML = "Updated";
         btnSend.disabled = false;
+        Successsweet('Match updated.');
       }
     },
   },

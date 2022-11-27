@@ -95,15 +95,17 @@
     .table {
       color: white;
     }
+
+    .modal-dialog {
+      padding: 4px !important;
+    }
   </style>
 </head>
 
-<body>
-  <div class="container" style="max-width: 600px;">
+<body style="max-width: 600px;">
+  <div class="container">
     <div class="logo"></div>
     <div id="app">
-
-    
 
       <div v-if="allow">
         <div class="row text-center">
@@ -167,6 +169,7 @@
                         <span class="team-name">{{predictionsList[indexOfPrediction].team1Name}}</span>
                       </div>
                       <div class="col-4" style=" display: inline-flex; margin-top: 10px;">
+
                       </div>
                       <div class="teamContainer">
                         <img class="rounded imgst"
@@ -319,7 +322,34 @@
                       </div>
                     </div>
                     <button class="btn btn-success mb-2" v-on:click="UpdateAllPredictions()">Submit</button>
+
+
                   </div>
+                  <div v-else-if="allNoPredictions">
+                    <button v-on:click="allNoPredictions=null" type="button" class="btn btn-secondary">Back</button>
+                    <table class="table  table-hover">
+                      <thead>
+                        <tr>
+                          <th scope="col"></th>
+                          <th scope="col">NameEn</th>
+                          <th scope="col">NameFa</th>
+                          <th scope="col">Prediction</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(item,index) in allNoPredictions">
+                          <th scope="row">{{index+1}}</th>
+                          <td>{{item.userName}}</td>
+                          <td>{{item.userNameFa}}</td>
+                          <td class="text-center">
+                            <img v-if="item.IsPredicte" src="assets/images/icons/ok_96px.png" style="width:30px;">
+                            <img v-else="item.IsPredicte" src="assets/images/icons/cancel_96px.png" style="width:30px;">
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
                   <div v-else>
                     <div v-for="item in matches">
                       <div class="card w-100">
@@ -352,9 +382,11 @@
                             </div>
                             <div class="col-4">
                               <button v-bind:id="'bm'+item.id" class="btn btn-success mb-2"
-                                v-on:click="UpdateMatch(matches.indexOf(item))">Submit</button>
+                                v-on:click="ConfirmUpdateMatch(matches.indexOf(item))">Submit</button>
                             </div>
                             <div class="col-4">
+                              <button v-if="userLogin.level>1" v-bind:id="'bp'+item.id" class="btn btn-success mb-2"
+                                v-on:click="getAllNoPredictions(item.id)">Check</button>
                             </div>
                           </div>
                         </div>
@@ -479,16 +511,17 @@
         </div>
 
       </div>
-      <div v-else style="margin-top: -140px;">
+      <div v-else style="margin-top: -140px;padding: 0px 50px;max-width: 600px;">
         <div class="mb-3 text-center">
-          <input v-model="pass" type="text" class="form-control" >
+          <input v-model="pass" type="text" class="form-control">
         </div>
         <div class="text-center">
-          <button id="btnLogin" type="button" v-on:click="Login" class="customeBtn" style="font-size: 25px;">
-          Login
-        </button>
+          <button id="btnLogin" type="button" v-on:click="Login" class="customeBtn"
+            style="font-size: 20px;width: 100%;">
+            Login
+          </button>
         </div>
-       
+
       </div>
 
     </div>
@@ -498,7 +531,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
       crossorigin="anonymous"></script>
-      <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/app.js"></script>
 </body>
 
