@@ -1,7 +1,7 @@
 {
-  "name": "pwanote",
+  "name": "PrAbadanCity",
   "version": "1.0.0",
-  "description": " PWA Course Project",
+  "description": " Prediction For Abadan City",
   "main": "index.js",
   "scripts": {
     "start": "http-server -c-1",
@@ -10,7 +10,7 @@
   },
   "keywords": [
     "PWA",
-    "TopLearn"
+    "AbadanCity"
   ],
   "author": "Seyedmansour Mohammadi",
   "license": "MIT",

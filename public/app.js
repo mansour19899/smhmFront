@@ -11,6 +11,26 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+async function Errorsweet(message) {
+  Swal.fire({
+      position: 'center',
+      icon: 'error',
+      title: message,
+      showConfirmButton: false,
+      timer: 3500
+  })
+}
+
+async function Successsweet(message) {
+  Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: message,
+      showConfirmButton: false,
+      timer: 3500
+  })
+}
+
 const app = Vue.createApp({
   data() {
     return {
@@ -31,25 +51,38 @@ const app = Vue.createApp({
   methods: {
     async Login() {
       this.userLogin=null;
-      console.log(this.pass);
-      const btnLog= document.querySelector("#btnLogin");
-      btnLog.innerHTML = "Please Wait...";
-      btnLog.disabled = true;
-      await fetch(this.addd + "/api/User/"+ this.pass)
-      .then((res) => res.json())
-      .then((data) => (this.userLogin = data))
-      .catch((err) => console.log(err.message));
-      if(this.userLogin.status==404){
-        this.allow=false;
-        alert('Incorrect PIN');
+      if (isNaN(this.pass)){
+        Errorsweet('Please Provide the input as a number');
+        return false;
+     }
+
+      if(this.pass.trim()=="")
+      {
+
       }
       else{
-        this.allow=true;
+        const btnLog= document.querySelector("#btnLogin");
+        btnLog.innerHTML = "Please Wait...";
+        btnLog.disabled = true;
+        await fetch(this.addd + "/api/User/"+ this.pass)
+        .then((res) => res.json())
+        .then((data) => (this.userLogin = data))
+        .catch((err) => Errorsweet('Check your Internet Conncetion'));
+  
+        if(this.userLogin.status==404){
+          this.allow=false;
+         Errorsweet('Incorrect PIN');
+        }
+        else{
+          this.allow=true;
+        }
+        this.pass="";
+        btnLog.innerHTML = "Login";
+        btnLog.disabled = false;
+        console.log(this.userLogin);
       }
-      this.pass="";
-      btnLog.innerHTML = "Login";
-      btnLog.disabled = false;
-      console.log(this.userLogin);
+      
+ 
     },
     async getMatch() {
       if (this.allow) {
@@ -57,7 +90,7 @@ const app = Vue.createApp({
           .then((res) => res.json())
           .then((data) => (this.matches = data))
           .then(console.log(this.matches))
-          .catch((err) => console.log(err.message));
+          .catch((err) => Errorsweet('Check your Internet Conncetion'));
       }
     },
     async getPredictions() {
@@ -67,7 +100,7 @@ const app = Vue.createApp({
           .then((res) => res.json())
           .then((data) => (this.predictionsList = data))
           .then(console.log(this.predictionsList))
-          .catch((err) => console.log(err.message));
+          .catch((err) => Errorsweet('Check your Internet Conncetion'));
       }
     },
     async getHistoryPredictions() {
@@ -77,7 +110,7 @@ const app = Vue.createApp({
           .then((res) => res.json())
           .then((data) => (this.predictionsList = data))
           .then(console.log(this.predictionsList))
-          .catch((err) => console.log(err.message));
+          .catch((err) => Errorsweet('Check your Internet Conncetion'));
       }
     },
     async getUsers() {
@@ -86,7 +119,7 @@ const app = Vue.createApp({
           .then((res) => res.json())
           .then((data) => (this.users = data))
           .then(console.log(this.users))
-          .catch((err) => console.log(err.message));
+          .catch((err) => Errorsweet('Check your Internet Conncetion'));
       }
     },
     async getResults() {
@@ -95,7 +128,7 @@ const app = Vue.createApp({
           .then((res) => res.json())
           .then((data) => (this.results = data))
           .then(console.log(this.results))
-          .catch((err) => console.log(err.message));
+          .catch((err) => Errorsweet('Check your Internet Conncetion'));
       }
     },
     async getAllPredictions(index) {
@@ -107,7 +140,7 @@ const app = Vue.createApp({
           .then((res) => res.json())
           .then((data) => (this.allPredictionsList = data))
           .then(console.log(this.allPredictionsList))
-         .catch((err) => console.log(err.message));
+         .catch((err) => Errorsweet('Check your Internet Conncetion'));
       }
     },
     async getAllPredictionsForSet(index) {
@@ -117,7 +150,7 @@ const app = Vue.createApp({
           .then((res) => res.json())
           .then((data) => (this.allPredictionsList = data))
           .then(console.log(this.allPredictionsList))
-         .catch((err) => console.log(err.message));
+         .catch((err) => Errorsweet('Check your Internet Conncetion'));
       }
     },
     async UpdatePredictions(index) {
@@ -144,11 +177,12 @@ const app = Vue.createApp({
           }
         )
           .then((response) => response.json())
-          .catch((err) => console.log(err));
+          .catch((err) => Errorsweet('Check your Internet Conncetion'));
 
         this.predictionsList[index].done = true;
         btnSend.innerHTML = "Updated";
         btnSend.disabled = false;
+        Successsweet('Prediction updated.');
       }
     },
     async UpdateAllPredictions() {
@@ -173,7 +207,7 @@ const app = Vue.createApp({
           }
         )
           .then((response) => response.json())
-          .catch((err) => console.log(err));
+          .catch((err) => Errorsweet('Check your Internet Conncetion'));
           this.allPredictionsList=null;
         // this.predictionsList[index].done = true;
         // btnSend.innerHTML = "Updated";
@@ -197,7 +231,7 @@ const app = Vue.createApp({
           headers: { "Content-type": "application/json; charset=UTF-8" },
         })
           .then((response) => response.json())
-          .catch((err) => console.log(err));
+          .catch(Errorsweet('Check your Internet Conncetion'));
 
         btnSend.innerHTML = "Updated";
         btnSend.disabled = false;
