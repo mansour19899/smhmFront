@@ -14,20 +14,32 @@ if ("serviceWorker" in navigator) {
 const app = Vue.createApp({
   data() {
     return {
-      userId: 2,
       matches: null,
       users: null,
+      userLogin: null,
       predictionsList: null,
       allPredictionsList: null,
       results: null,
       title: "",
+      pass: "",
       indexOfPrediction: 0,
       userNameShow: "",
       addd: "https://localhost:7233",
-      allow: true,
+      allow: false,
     };
   },
   methods: {
+    async Login() {
+      this.userLogin=null;
+      console.log(this.pass);
+      await fetch(this.addd + "/api/User/"+ this.pass)
+      .then((res) => res.json())
+      .then((data) => (this.userLogin = data))
+      .then(this.allow=true)
+      .catch((err) => console.log(err.message));
+      this.pass="";
+      console.log(this.userLogin);
+    },
     async getMatch() {
       if (this.allow) {
         await fetch(this.addd + "/api/Match")
@@ -40,7 +52,17 @@ const app = Vue.createApp({
     async getPredictions() {
       if (this.allow) {
         this.allPredictionsList=null;
-        await fetch(this.addd + "/api/predictions/" + this.userId)
+        await fetch(this.addd + "/api/predictions/" + this.userLogin.id)
+          .then((res) => res.json())
+          .then((data) => (this.predictionsList = data))
+          .then(console.log(this.predictionsList))
+          .catch((err) => console.log(err.message));
+      }
+    },
+    async getHistoryPredictions() {
+      if (this.allow) {
+        this.allPredictionsList=null;
+        await fetch(this.addd + "/api/HistoryPredictions/" + this.userLogin.id)
           .then((res) => res.json())
           .then((data) => (this.predictionsList = data))
           .then(console.log(this.predictionsList))
@@ -141,7 +163,7 @@ const app = Vue.createApp({
         )
           .then((response) => response.json())
           .catch((err) => console.log(err));
-
+          this.allPredictionsList=null;
         // this.predictionsList[index].done = true;
         // btnSend.innerHTML = "Updated";
         // btnSend.disabled = false;

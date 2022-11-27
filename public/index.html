@@ -104,30 +104,45 @@
   <div class="container" style="max-width: 600px;">
     <div class="logo"></div>
     <div id="app">
-      <div>
+
+    
+
+      <div v-if="allow">
         <div class="row text-center">
+          <h1 v-if="userLogin" style="font-size: 40px;color:white;">{{userLogin.nameEn}}</h1>
           <div class=" ">
             <button type="button" v-on:click="getPredictions" class="customeBtn" data-bs-toggle="modal"
               data-bs-target="#ModalPredictions" style="font-size: 25px;">
               Predictions
             </button>
           </div>
-          <div class=" ">
+          <div v-if="userLogin.level>1" class=" ">
             <button type="button" v-on:click="getMatch" class="customeBtn" data-bs-toggle="modal"
               data-bs-target="#ModalMatches" style="font-size: 25px;">
               Matches
             </button>
-            <div class="">
-              <button type="button" v-on:click="getUsers" class="customeBtn" data-bs-toggle="modal"
-                data-bs-target="#ModalUsers" style="font-size: 25px;">
-                Users
-              </button>
-            </div>
           </div>
           <div class=" ">
             <button type="button" v-on:click="getResults" class="customeBtn" data-bs-toggle="modal"
               data-bs-target="#ModalTable" style="font-size: 25px;">
               Table
+            </button>
+          </div>
+          <div class=" ">
+            <button type="button" v-on:click="getHistoryPredictions" class="customeBtn" data-bs-toggle="modal"
+              data-bs-target="#ModalPredictions" style="font-size: 25px;">
+              History
+            </button>
+          </div>
+          <div v-if="userLogin.level>2" class="">
+            <button type="button" v-on:click="getUsers" class="customeBtn" data-bs-toggle="modal"
+              data-bs-target="#ModalUsers" style="font-size: 25px;">
+              Users
+            </button>
+          </div>
+          <div class=" ">
+            <button type="button" v-on:click="allow=false" class="customeBtn" style="font-size: 25px;">
+              Logout
             </button>
           </div>
         </div>
@@ -149,20 +164,15 @@
                     <button v-on:click="allPredictionsList=null" type="button" class="btn btn-secondary">Back</button>
                     <div class="teamsContainer">
                       <div class="teamContainer">
-                        <img class="rounded imgst" v-bind:src="'./assets/flags/'+ predictionsList[indexOfPrediction].team1Id+'.webp'" /> </h5>
+                        <img class="rounded imgst"
+                          v-bind:src="'./assets/flags/'+ predictionsList[indexOfPrediction].team1Id+'.webp'" /> </h5>
                         <span class="team-name">{{predictionsList[indexOfPrediction].team1Name}}</span>
                       </div>
                       <div class="col-4" style=" display: inline-flex; margin-top: 10px;">
-                        <input v-model="predictionsList[indexOfPrediction].scoreTeam1" type="number" class="form-control input-default"
-                          style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0"
-                          ondrop="return false;" onpaste="return false;">
-                        <h1 class="slash" style="margin: 8 10 0 10;">-</h1>
-                        <input v-model="predictionsList[indexOfPrediction].scoreTeam2" type="number" class="form-control input-default"
-                          style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0"
-                          ondrop="return false;" onpaste="return false;">
                       </div>
                       <div class="teamContainer">
-                        <img class="rounded imgst" v-bind:src="'./assets/flags/'+ predictionsList[indexOfPrediction].team2Id+'.webp'" />
+                        <img class="rounded imgst"
+                          v-bind:src="'./assets/flags/'+ predictionsList[indexOfPrediction].team2Id+'.webp'" />
                         <span class="team-name">{{predictionsList[indexOfPrediction].team2Name}}</span> </h5>
                       </div>
                     </div>
@@ -173,17 +183,19 @@
                           <th scope="col">Id</th>
                           <th scope="col">NameEn</th>
                           <th scope="col">NameFa</th>
-                          <th scope="col"></th>
-                          <th scope="col"></th>
+                          <th scope="col">{{allPredictionsList[0].Team1S}}</th>
+                          <th scope="col">{{allPredictionsList[0].Team2S}}</th>
+                          <th scope="col">Score</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="item in allPredictionsList">
-                          <th scope="row">{{item.Id}}</th>
+                        <tr v-for="(item,index) in allPredictionsList">
+                          <th scope="row">{{index+1}}</th>
                           <td>{{item.NameEn}}</td>
                           <td>{{item.NameFa}}</td>
-                          <td>{{item.ScoreTeam1}}</td>
-                          <td>{{item.ScoreTeam2}}</td>
+                          <td><span v-if="item.done">{{item.ScoreTeam1}}</span></td>
+                          <td><span v-if="item.done">{{item.ScoreTeam2}}</span></td>
+                          <td><span v-if="item.done">{{item.scorePerPrediction}}</span></td>
                         </tr>
                       </tbody>
                     </table>
@@ -195,7 +207,7 @@
                           <div class="row" style="margin-bottom:-30px;">
                             <div class="col-2"></div>
                             <div class="col-8 text-center">
-                              <h3>20 Novmber</h3>
+                              <h3>{{item.dateToShow}}</h3>
                             </div>
                             <div class="col-2 text-end">
                               <span v-if="item.done" class="badge bg-success">Done</span>
@@ -263,6 +275,7 @@
 
                 <div v-if="matches">
                   <div v-if="allPredictionsList">
+                    <button v-on:click="allPredictionsList=null" type="button" class="btn btn-secondary">Back</button>
                     <div v-for="item in allPredictionsList">
                       <div class="card w-100">
                         <div class="card-body cardst cardContainer">
@@ -284,11 +297,11 @@
                               <span class="team-name">{{item.team1Name}}</span>
                             </div>
                             <div class="col-4" style=" display: inline-flex; margin-top: 10px;">
-                              <input v-model="item.scoreTeam1" type="number" class="form-control input-default"
+                              <input v-model="item.ScoreTeam1" type="number" class="form-control input-default"
                                 style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0"
                                 ondrop="return false;" onpaste="return false;">
                               <h1 class="slash" style="margin: 8 10 0 10;">-</h1>
-                              <input v-model="item.scoreTeam2" type="number" class="form-control input-default"
+                              <input v-model="item.ScoreTeam2" type="number" class="form-control input-default"
                                 style=" font-size: 20; font-weight: bold; text-align: center; " placeholder="0"
                                 ondrop="return false;" onpaste="return false;">
                             </div>
@@ -297,12 +310,17 @@
                               <span class="team-name">{{item.team2Name}}</span> </h5>
                             </div>
                           </div>
-                         
+                          <div class="form-check mt-1">
+                            <input class="form-check-input" v-model="item.noPrediction" type="checkbox" value=""
+                              id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                              Not Predicted.
+                            </label>
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <button class="btn btn-success mb-2"
-                    v-on:click="UpdateAllPredictions()">Submit</button>
+                    <button class="btn btn-success mb-2" v-on:click="UpdateAllPredictions()">Submit</button>
                   </div>
                   <div v-else>
                     <div v-for="item in matches">
@@ -331,12 +349,12 @@
                                 v-on:click="UpdateMatch(maches.indexOf(item))">Review</button>
                             </div> -->
                             <div class="col-4">
-                              <button v-bind:id="'bp'+item.id" class="btn btn-success mb-2"
+                              <button v-if="userLogin.level>2" v-bind:id="'bp'+item.id" class="btn btn-success mb-2"
                                 v-on:click="getAllPredictionsForSet(item.id)">Set</button>
                             </div>
                             <div class="col-4">
                               <button v-bind:id="'bm'+item.id" class="btn btn-success mb-2"
-                                v-on:click="UpdateMatch(maches.indexOf(item))">Submit</button>
+                                v-on:click="UpdateMatch(matches.indexOf(item))">Submit</button>
                             </div>
                             <div class="col-4">
                             </div>
@@ -391,7 +409,7 @@
                         <td>{{item.nameEn}}</td>
                         <td>{{item.nameFa}}</td>
                         <td>{{item.userName}}</td>
-                        <td>******</td>
+                        <td>{{item.pass}}</td>
                         <td>{{item.score}}</td>
                         <td>{{item.active}}</td>
                       </tr>
@@ -416,54 +434,64 @@
         </div>
 
         <div class="modal fade" id="ModalTable" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="ModalTableLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="ModalTableLabel">Table</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-
-              <div v-if="results">
-                <table class="table  table-hover">
-                  <thead>
-                    <tr>
-                      <th scope="col"></th>
-                      <th scope="col">NameEn</th>
-                      <th scope="col">NameFa</th>
-                      <th scope="col">Score</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="item in results">
-                      <th scope="row">{{item.index}}</th>
-                      <td>{{item.nameEn}}</td>
-                      <td>{{item.nameFa}}</td>
-                      <td>{{item.score}}</td>
-                    </tr>
-                  </tbody>
-                </table>
+          aria-labelledby="ModalTableLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="ModalTableLabel">Table</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div v-else>
-                <div class="d-flex align-items-center text-warning">
-                  <strong>Loading...</strong>
-                  <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+              <div class="modal-body">
+
+                <div v-if="results">
+                  <table class="table  table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col"></th>
+                        <th scope="col">NameEn</th>
+                        <th scope="col">NameFa</th>
+                        <th scope="col">Score</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="item in results">
+                        <th scope="row">{{item.index}}</th>
+                        <td>{{item.nameEn}}</td>
+                        <td>{{item.nameFa}}</td>
+                        <td>{{item.score}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
+                <div v-else>
+                  <div class="d-flex align-items-center text-warning">
+                    <strong>Loading...</strong>
+                    <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+                  </div>
+                </div>
+
+
+
               </div>
-
-
-
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
       </div>
-
+      <div v-else style="margin-top: -140px;">
+        <div class="mb-3 text-center">
+          <input v-model="pass" type="text" class="form-control" >
+        </div>
+        <div class="text-center">
+          <button type="button" v-on:click="Login" class="customeBtn" style="font-size: 25px;">
+          Login
+        </button>
+        </div>
+       
+      </div>
 
     </div>
 
