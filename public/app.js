@@ -24,7 +24,7 @@ const app = Vue.createApp({
       pass: "",
       indexOfPrediction: 0,
       userNameShow: "",
-      addd: "https://localhost:7233",
+      addd: "https://smhm.azurewebsites.net",
       allow: false,
     };
   },
