@@ -1,7 +1,7 @@
 {
-  "name": "PrAbadanCity",
+  "name": "EnglishPractice",
   "version": "1.0.0",
-  "description": " Prediction For Abadan City",
+  "description": " Practice",
   "main": "index.js",
   "scripts": {
     "start": "http-server -c-1",
@@ -14,8 +14,8 @@
   ],
   "author": "Seyedmansour Mohammadi",
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
+    "firebase-functions": "^4.1.1",
     "http-server": "^0.10.0"
   }
 }

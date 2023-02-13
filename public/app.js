@@ -39,38 +39,34 @@ const app = Vue.createApp({
       index: 0,
       shuffledSentenceSelected: null,
       SenteceInput: "",
+      currentAnswer: "",
       isCorrect: false,
       isUncorrect: false,
       isImport: true,
       isDone: false,
       isImportSentences: true,
       sentenceCount: 0,
+      takeSentenceNum:10
     };
   },
   methods: {
     async start() {
-
-      if(this.inputText==null)
-      {
+      if (this.inputText == null) {
         Errorsweet("Insert Text");
         return;
       }
 
-      if(this.inputText.trim()=='')
-      {
+      if (this.inputText.trim() == "") {
         Errorsweet("Insert Text");
         return;
       }
-
 
       const lines = this.inputText.split("<br>");
-      console.log(lines);
       const Words = lines[0].replace("\n", " \n ");
-      console.log(Words);
-      this.sentences = Words.split("\n");
-      console.log(this.sentences);
+      const temp=Words.split("\n");
+      const temp2 = temp.filter((e) => String(e).trim());
+      this.sentences = this.shuffleArray(temp2).slice(0,this.takeSentenceNum);
       this.sentenceCount = this.sentences.length;
-      console.log("lenght is " + this.sentenceCount);
       this.isDone = false;
       this.isImport = true;
       this.isCorrect = false;
@@ -80,23 +76,26 @@ const app = Vue.createApp({
       this.isImportSentences = false;
       this.practice();
     },
-    async practice() {
-      const sen1 = this.sentences[this.index].split(" ");
-      const sen2=sen1.sort((a, b) => 0.5 - Math.random());
-      this.shuffledSentenceSelected = sen2.filter(e => String(e).trim());
-      console.log(this.shuffledSentenceSelected);
+    shuffleArray: function(array) {
 
-      // const shuffleArray = array => {
-      //   for (let i = array.length - 1; i > 0; i--) {
-      //     const j = Math.floor(Math.random() * (i + 1));
-      //     const temp = array[i];
-      //     array[i] = array[j];
-      //     array[j] = temp;
-      //   }
-      // }
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+         const temp = array[i];
+       array[i] = array[j];
+         array[j] = temp;
+      }    
+     
+     return array;
+  },
+    async practice() {
+      this.currentAnswer=this.sentences[this.index];
+      const sen1 = this.currentAnswer.split(" ");
+      const sen2 = this.shuffleArray(sen1);
+      this.shuffledSentenceSelected = sen2.filter((e) => String(e).trim());
     },
-    async addWord(word) {
+    async addWord(word, btnNum) {
       this.SenteceInput = this.SenteceInput + " " + word;
+      document.querySelector(btnNum).disabled = true;
     },
     async checkSentece() {
       const btnLog = document.querySelector("#btnMain");
@@ -111,6 +110,7 @@ const app = Vue.createApp({
         if (this.index > this.sentenceCount - 1) {
           btnLog.innerHTML = "Done";
           this.isDone = true;
+          document.querySelector("#btnRest").style.display = "none";
           return;
         }
 
@@ -119,25 +119,29 @@ const app = Vue.createApp({
         this.isImport = true;
         this.SenteceInput = "";
         btnLog.innerHTML = "Check";
+        this.deselectButtons();
+        document.querySelector("#btnRest").disabled = false;
       } else if (this.isUncorrect) {
         this.practice();
         this.isUncorrect = false;
         this.isImport = true;
         this.SenteceInput = "";
         btnLog.innerHTML = "Check";
+        this.deselectButtons();
+        document.querySelector("#btnRest").disabled = false;
       } else {
         if (
           this.SenteceInput.replace(/\s/g, "") ===
-          this.sentences[this.index].replace(/\s/g, "")
+          this.currentAnswer.replace(/\s/g, "")
         ) {
           this.isCorrect = true;
           this.isImport = false;
           btnLog.innerHTML = "Next";
+          document.querySelector("#btnRest").disabled = true;
         } else {
           this.isUncorrect = true;
           this.isImport = false;
-          console.log(this.SenteceInput.replace(/\s/g, ""));
-          console.log(this.sentences[this.index].replace(/\s/g, ""));
+          document.querySelector("#btnRest").disabled = true;
           btnLog.innerHTML = "Try Again";
         }
       }
@@ -153,18 +157,47 @@ const app = Vue.createApp({
         });
       }
     },
+    async deselectButtons() {
+
+      for (let i = 0; i < this.shuffledSentenceSelected.length; i++) {
+        document.querySelector("#btn" + i).disabled = false;
+      }
+    },
+    async resetAnswer() {
+      this.deselectButtons();
+      this.SenteceInput="";
+    },
+    async exitApp(){
+      if(this.isImportSentences){
+        window.close();
+      }
+      else{
+        this.isImportSentences=true;
+      }
+      document.getElementById("btncloseModal").click();
+    },
   },
-  computed: {},
+  computed: {
+    InputSentenceCount: function() {
+      let Num=0;
+      if(this.inputText!=null)
+      {
+        const lines = this.inputText.split("<br>");
+        const Words = lines[0].split("\n");
+        const temp2 = Words.filter((e) => String(e).trim());
+        Num=temp2.length;
+      }
+      return Num;
+  }
+  },
 });
 
 app.mount("#app");
 
-
-window.onload = function() {
-  var delayInMilliseconds = 3000; 
-setTimeout(function() {
-  document.querySelector("#container").style.display='flex';
-  document.querySelector("#overlay").style.display='none';  
-}, delayInMilliseconds);
-
+window.onload = function () {
+  var delayInMilliseconds = 3000;
+  setTimeout(function () {
+    document.querySelector("#container").style.display = "flex";
+    document.querySelector("#overlay").style.display = "none";
+  }, delayInMilliseconds);
 };

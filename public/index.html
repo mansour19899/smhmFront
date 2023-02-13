@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Prediction Abadan City</title>
+  <title>English Practice smm.2020</title>
   <!-- Manifest.json-->
   <link rel="manifest" href="/manifest.json">
   <!--
@@ -22,13 +22,9 @@
     integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
   <style>
     .customeBtn {
-      background: #56042c;
-      color: white;
-      padding: 4px 1em;
-      border-radius: 8px;
-      border: 1.5px solid #Fec310;
-      width: 9em;
-      margin: 20px 0px;
+
+      margin: 0 10px;
+      max-width: 100px;
     }
 
     .container {
@@ -38,7 +34,7 @@
       flex-direction: column;
       display: flex;
       justify-content: space-evenly;
-      max-width: 800px;
+      max-width: 850px;
       display: none;
     }
     .overlay{
@@ -66,13 +62,15 @@
       <div v-if="isImportSentences">
         <div class="row" style="margin: 20px 5px;">
           <div class="mb-3">
-            <label class="form-label" style="font-weight: bold;color: white;">Input Text</label>
+            <label class="form-label" style="font-weight: bold;color: white;">Number of Sentence Practice</label>
+            <input type="number" v-model="takeSentenceNum" class="form-control mb-3">
             <textarea class="form-control" v-model="inputText" rows="6"></textarea>
+            <p class="mt-3" style="font-size: 18px;color: white;padding-left: 10px;">{{InputSentenceCount}} sentences entered. </p>
           </div>
         </div>
         <div class="row d-flex justify-content-center">
-          <button v-on:click="start()" type="button" class="btn btn-success" style="max-width: 100px; margin-right: 10px;">Submit</button>
-          <button v-on:click="inputText=''" type="button" class="btn btn-danger" style="max-width: 100px; margin-left: 10px;">Clear</button>
+          <button v-on:click="start()" type="button" class="btn btn-success customeBtn" >Start</button>
+          <button v-on:click="inputText=''" type="button" class="btn btn-danger customeBtn">Clear</button>
         </div>
       </div>
       <div v-else>
@@ -82,17 +80,28 @@
         <div v-else >
           <div class="row mt-5">
             <div class="">
-              <button v-for="item in shuffledSentenceSelected" v-on:click="addWord(item)" type="button"
+              <button v-for="(item,index) in shuffledSentenceSelected" v-bind:id="'btn'+index" v-on:click="addWord(item,'#btn'+index)" type="button"
                 class="btn btn-primary" style="margin: 10px;">{{item.trim()}}</button>
             </div>
           </div>
           <div class="row px-2">
-            <div class="alert"
+            <div class="alert mb-5"
               v-bind:class="{'alert-success' : isCorrect,'alert-danger' : isUncorrect,'alert-light' : isImport}"
               role="alert">
-              <h4 v-if="isImport" class="alert-heading">{{(index+1)+'/'+sentenceCount}}</h4>
-              <h4 v-if="isCorrect" class="alert-heading">Well done!</h4>
-              <h4 v-if="isUncorrect" class="alert-heading d-flex justify-content-start" >Try Again!<button id="liveToastBtn" v-on:click="showAnswer()" type="button" class="badge bg-secondary" style="font-size: 9px;margin-left: 10px;">Answer</button></h4>
+              <div class="row">
+                <div class="col-6">
+                  <h4 v-if="isImport" class="alert-heading">{{(index+1)+'/'+sentenceCount}}</h4>
+                </div>
+                <div class="col-6 d-flex justify-content-end">
+                  <button onclick='responsiveVoice.speak(getElementById("answerId").value, "US English Male")' type="button" class="btn btn-outline-dark" style="margin-right:20px;">Male</button>
+                  <button onclick='responsiveVoice.speak(getElementById("answerId").value, "US English Female")' type="button" class="btn btn-outline-dark">Female</button>
+                </div>        
+                <input id="answerId" v-model="currentAnswer" hidden>
+              </div>
+              <div style="height: 25px;">
+                <h4 v-if="isCorrect" class="alert-heading">Well done!</h4>
+                <h4 v-if="isUncorrect" class="alert-heading d-flex justify-content-start" >Try Again!<button id="liveToastBtn" v-on:click="showAnswer()" type="button" class="badge bg-secondary" style="font-size: 9px;margin-left: 10px;">Answer</button></h4>
+              </div>
               <p class="mb-4" style="height: 6px;">{{SenteceInput}}</p>
               <hr>
               <p class="mb-0"></p>
@@ -102,10 +111,11 @@
 
 
 
-        <div class="row d-flex justify-content-center">
-          <button id="btnMain" v-on:click="checkSentece()" type="button" class="btn btn-success"
-            style="max-width: 150px;">Check</button>
+        <div class="row d-flex justify-content-center mt-2">
+          <button id="btnMain" v-on:click="checkSentece()" type="button" class="btn btn-success customeBtn">Check</button>
+          <button id="btnRest" v-on:click="resetAnswer()" type="button" class="btn btn-warning customeBtn">Restart</button>
         </div>
+
       </div>
 
       <div class="toast-container position-fixed bottom-0 end-0 p-3">
@@ -119,7 +129,34 @@
         </div>
       </div>
 
+      <div>
+        <div class="" style="position: absolute;bottom: 30px; right: 20px;">
+          <button type="button" class="btn btn-warning customeBtn mb-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Exit
+          </button>
+          <h6 style="color: white;">smm.2020</h6>
+        </div>
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                Are You Sure?
+              </div>
+              <div class="modal-footer">
+                <button v-on:click="exitApp()" type="button" class="btn btn-primary">Yes</button>
+                <button id="btncloseModal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
+
 
 
 
@@ -128,6 +165,7 @@
       integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
       crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=gZSJnbBZ"></script>
     <script src="/app.js"></script>
 </body>
 
