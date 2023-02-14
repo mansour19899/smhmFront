@@ -45,8 +45,15 @@ const app = Vue.createApp({
       isImport: true,
       isDone: false,
       isImportSentences: true,
+      isQuestion: false,
       sentenceCount: 0,
-      takeSentenceNum:10
+      takeSentenceNum:10,
+      currentQuestion:'',
+      currentAnswer:'',
+      ShowTheAnswer:false,
+      indexQuestion:0,
+      Questions:[],
+      QuestionsCount: 0,
     };
   },
   methods: {
@@ -61,20 +68,69 @@ const app = Vue.createApp({
         return;
       }
 
-      const lines = this.inputText.split("<br>");
-      const Words = lines[0].replace("\n", " \n ");
-      const temp=Words.split("\n");
-      const temp2 = temp.filter((e) => String(e).trim());
-      this.sentences = this.shuffleArray(temp2).slice(0,this.takeSentenceNum);
-      this.sentenceCount = this.sentences.length;
-      this.isDone = false;
-      this.isImport = true;
-      this.isCorrect = false;
-      this.isUncorrect = false;
-      this.SenteceInput = "";
-      this.index = 0;
-      this.isImportSentences = false;
-      this.practice();
+      const chkbox=document.querySelector('#chkQuestion');
+
+      if(chkbox.checked==true)
+      {
+        const ques=this.inputText.split("<br>");
+        console.log(ques);
+        const quess = ques[0].replace("\n", " \n ");
+        console.log(quess);
+        const tempp=quess.split("\n");
+        console.log(tempp);
+         this.Questions=[];
+        let q='';
+        let answer='';
+
+        for (let item=0;item<=tempp.length;item++)
+        {
+          if(tempp[item]=="")
+          {
+            this.Questions.push({
+              id:item,
+              qu:q,
+              ans:answer
+            });
+            q='';
+            answer='';
+          }
+          if(q=='')
+          {
+            q=tempp[item];
+          }
+          else{
+            answer=answer+tempp[item]+'\n';
+          }
+
+         
+        }
+
+        this.currentQuestion=this.Questions[this.indexQuestion].qu;
+        this.currentAnswer=this.Questions[this.indexQuestion].ans;
+        this.isImportSentences = false;
+        this.isQuestion=true;
+        this.QuestionsCount = this.Questions.length;
+        console.log("quuuuuuuu");
+
+      }
+      else{
+        const lines = this.inputText.split("<br>");
+        const Words = lines[0].replace("\n", " \n ");
+        const temp=Words.split("\n");
+        const temp2 = temp.filter((e) => String(e).trim());
+        this.sentences = this.shuffleArray(temp2).slice(0,this.takeSentenceNum);
+        this.sentenceCount = this.sentences.length;
+        this.isDone = false;
+        this.isImport = true;
+        this.isCorrect = false;
+        this.isUncorrect = false;
+        this.SenteceInput = "";
+        this.index = 0;
+        this.isImportSentences = false;
+        this.practice();
+      }
+
+
     },
     shuffleArray: function(array) {
 
@@ -175,6 +231,26 @@ const app = Vue.createApp({
         this.isImportSentences=true;
       }
       document.getElementById("btncloseModal").click();
+    },
+    async btnQuestion(){
+      if(this.ShowTheAnswer){
+        if(this.indexQuestion<this.QuestionsCount)
+        {
+          this.isDone=true;
+          return;
+        }
+        document.getElementById('btnQuestion').innerText="Answer";
+        this.ShowTheAnswer=false;
+        this.indexQuestion=this.indexQuestion+1;
+        this.currentQuestion=this.Questions[this.indexQuestion].qu;
+        this.currentAnswer=this.Questions[this.indexQuestion].ans;
+      }
+      else{
+       document.getElementById('btnQuestion').innerText="Next";
+        this.ShowTheAnswer=true;
+       
+      }
+      
     },
   },
   computed: {
