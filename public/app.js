@@ -46,6 +46,7 @@ const app = Vue.createApp({
       isDone: false,
       isImportSentences: true,
       isQuestion: false,
+      isSearchQuestion: false,
       sentenceCount: 0,
       takeSentenceNum:10,
       currentQuestion:'',
@@ -53,6 +54,8 @@ const app = Vue.createApp({
       ShowTheAnswer:false,
       indexQuestion:0,
       Questions:[],
+      textForSearchQuestion: "",
+      QuestionsSearchList:[],
       QuestionsCount: 0,
     };
   },
@@ -72,6 +75,11 @@ const app = Vue.createApp({
 
       if(chkbox.checked==true)
       {
+        this.Questions=[];
+        this.indexQuestion=0;
+        this.isDone=false;
+        this.ShowTheAnswer=false;
+        this.isSearchQuestion=false;
         const ques=this.inputText.split("<br>");
         console.log(ques);
         const quess = ques[0].replace("\n", " \n ");
@@ -84,7 +92,7 @@ const app = Vue.createApp({
 
         for (let item=0;item<=tempp.length;item++)
         {
-          if(tempp[item]=="")
+          if(tempp[item]==""|| item==tempp.length)
           {
             this.Questions.push({
               id:item,
@@ -104,12 +112,14 @@ const app = Vue.createApp({
 
          
         }
-
+        this.Questions = this.shuffleArray(this.Questions).slice(0,this.takeSentenceNum);
         this.currentQuestion=this.Questions[this.indexQuestion].qu;
         this.currentAnswer=this.Questions[this.indexQuestion].ans;
         this.isImportSentences = false;
         this.isQuestion=true;
         this.QuestionsCount = this.Questions.length;
+        console.log(this.Questions);
+        console.log(this.QuestionsCount);
         console.log("quuuuuuuu");
 
       }
@@ -120,6 +130,7 @@ const app = Vue.createApp({
         const temp2 = temp.filter((e) => String(e).trim());
         this.sentences = this.shuffleArray(temp2).slice(0,this.takeSentenceNum);
         this.sentenceCount = this.sentences.length;
+        this.isQuestion=false;
         this.isDone = false;
         this.isImport = true;
         this.isCorrect = false;
@@ -234,14 +245,17 @@ const app = Vue.createApp({
     },
     async btnQuestion(){
       if(this.ShowTheAnswer){
-        if(this.indexQuestion<this.QuestionsCount)
-        {
+        console.log(this.indexQuestion);
+        if(this.indexQuestion==this.QuestionsCount-1)
+        {         
           this.isDone=true;
           return;
         }
         document.getElementById('btnQuestion').innerText="Answer";
         this.ShowTheAnswer=false;
         this.indexQuestion=this.indexQuestion+1;
+        console.log(this.Questions);
+        console.log(this.Questions[this.indexQuestion].qu);
         this.currentQuestion=this.Questions[this.indexQuestion].qu;
         this.currentAnswer=this.Questions[this.indexQuestion].ans;
       }
@@ -264,6 +278,34 @@ const app = Vue.createApp({
         Num=temp2.length;
       }
       return Num;
+  },
+  searchResult() {
+
+    let templist = this.Questions;
+
+    if (this.textForSearchQuestion.trim() != '' && this.textForSearchQuestion) {
+      let templist2 = templist.slice(1, 3);
+      let xxx = this.textForSearchQuestion.toUpperCase().split(" ");
+
+      for (i = 0; i < xxx.length; i++) {
+          templist2 = [];
+          templist2 = templist.filter((item) => {
+              return item.qu
+                  .toUpperCase()
+                  .includes(xxx[i].toUpperCase()) ||item.ans
+                  .toUpperCase()
+                  .includes(xxx[i].toUpperCase())
+          });
+          templist = [];
+          templist = templist2;
+      }
+      return templist;
+    }
+    else{
+      return [];
+    }
+
+    
   }
   },
 });

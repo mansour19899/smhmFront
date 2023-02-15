@@ -94,12 +94,31 @@ margin-left: 20px;
       </div>
       <div v-else-if="isQuestion">
         <div v-if="isDone" class="d-flex justify-content-center mb-5">
-          <img src="assets/images/Done.png" style="height: 200px;">
+          <img src="assets/images/Done.png" style="height: 200px;" v-on:click="isImportSentences=true"  >
+        </div>
+        <div v-else-if="isSearchQuestion">
+          <div class="row" style="margin: 20px 5px;">
+            <div class="mb-3 position-absolute top-0 start-50 translate-middle-x">
+              <div style="margin-bottom: 100px;">
+                <label class="form-label" style="font-weight: bold;color: white;">Search</label>
+                <input type="text" v-model="textForSearchQuestion" class="form-control mb-3">
+              </div>
+
+              <div class="card text-dark bg-light mb-3" v-for="item in searchResult">
+               
+                <div class="card-body">
+                  <h5 class="card-title">{{item.qu}}</h5>
+                  <p class="card-text">{{item.ans}}</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
         <div v-else>
           <div class="card">
-            <div class="card-header">
-              Featured
+            <div class="card-header text-end">
+              <button id="btnSearchQuestion" style="width: 60px; font-size: 10px;" type="button" class="btn btn-outline-dark" v-on:click="isSearchQuestion=true" >Search</button>
             </div>
             <div class="card-body">
               <h5 class="card-title">{{ currentQuestion }}</h5>            
