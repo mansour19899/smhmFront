@@ -86,8 +86,8 @@ const app = Vue.createApp({
       }
 
       const chkbox=document.querySelector('#chkQuestion');
-
-      if(chkbox.checked==true)
+      const chkbox2=document.querySelector('#chkSearch');
+      if(chkbox.checked==true||chkbox2.checked==true)
       {
         this.Questions=[];
         this.indexQuestion=0;
@@ -108,25 +108,43 @@ const app = Vue.createApp({
         {
           if(tempp[item]==""|| item==tempp.length)
           {
-            this.Questions.push({
+            if(q.trim()!="")
+            {this.Questions.push({
               id:item,
               qu:q,
               ans:answer
-            });
+            });}
+
             q='';
             answer='';
           }
-          if(q=='')
-          {
-            q=tempp[item];
+          if(item!=tempp.length){
+            if(tempp[item].indexOf("*")!=-1){
+              console.log("what the fuck");
+            }
+            else{
+
+              if(q=='')
+              {
+                q=tempp[item];
+              }
+              else{
+                answer=answer+tempp[item]+'\n';
+              }
+    
+            }
           }
-          else{
-            answer=answer+tempp[item]+'\n';
-          }
+
 
          
         }
-        this.Questions = this.shuffleArray(this.Questions).slice(0,this.takeSentenceNum);
+        if(chkbox2.checked==true){
+          this.Questions = this.Questions.slice(0,this.takeSentenceNum);
+        }
+        else{
+          this.Questions = this.shuffleArray(this.Questions).slice(0,this.takeSentenceNum);
+        }
+       
         this.currentQuestion=this.Questions[this.indexQuestion].qu;
         this.currentAnswer=this.Questions[this.indexQuestion].ans;
         this.isImportSentences = false;
