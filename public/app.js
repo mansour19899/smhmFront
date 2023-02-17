@@ -38,8 +38,7 @@ var openFile = function(event) {
   reader.onload = function() {
     var text = reader.result;
     var node = document.getElementById('output');
-    node.value  = text;
-    console.log(reader.result.substring(0, 200));
+    node.value  = text;  
   };
   reader.readAsText(input.files[0]);
 };
@@ -120,7 +119,7 @@ const app = Vue.createApp({
           }
           if(item!=tempp.length){
             if(tempp[item].indexOf("*")!=-1){
-              console.log("what the fuck");
+              
             }
             else{
 
@@ -139,7 +138,7 @@ const app = Vue.createApp({
          
         }
         if(chkbox2.checked==true){
-          this.Questions = this.Questions.slice(0,this.takeSentenceNum);
+          this.Questions = this.Questions;
         }
         else{
           this.Questions = this.shuffleArray(this.Questions).slice(0,this.takeSentenceNum);
@@ -290,6 +289,11 @@ const app = Vue.createApp({
         console.log(this.Questions[this.indexQuestion].qu);
         this.currentQuestion=this.Questions[this.indexQuestion].qu;
         this.currentAnswer=this.Questions[this.indexQuestion].ans;
+        if(chkboxPlaySound.checked==true)
+        {
+          responsiveVoice.speak(this.currentQuestion.split("(")[0], "US English Male");
+          console.log("paly sound");
+        }
       }
       else{
        document.getElementById('btnQuestion').innerText="Next";

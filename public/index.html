@@ -36,6 +36,7 @@
       justify-content: space-evenly;
       max-width: 850px;
       display: none;
+      background-repeat: repeat-y;
     }
     .overlay{
     opacity:1;
@@ -127,11 +128,23 @@ margin-left: 20px;
         </div>
         <div v-else>
           <div class="card">
-            <div class="card-header text-end">
-              <button id="btnSearchQuestion" style="width: 60px; font-size: 10px;" type="button" class="btn btn-outline-dark" v-on:click="isSearchQuestion=true" >Search</button>
+            <div class="card-header">
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="chkboxPlaySound">
+                    <label class="form-check-label" for="chkboxPlaySound">Play Sound</label>
+                  </div>
+                </div>
+                <div class="col-6  text-end">
+                  <button  style="width: 60px; font-size: 10px; margin-right: 20px;" type="button" class="btn btn-outline-dark" onclick='responsiveVoice.speak(getElementById("currentquestionid").innerHTML.split("(")[0], "US English Male")' >Male</button>
+                  <button id="btnSearchQuestion" style="width: 60px; font-size: 10px;" type="button" class="btn btn-outline-dark" v-on:click="isSearchQuestion=true" >Search</button>
+                </div>
+              </div>
+            
             </div>
             <div class="card-body">
-              <h5 class="card-title">{{ currentQuestion }}</h5>            
+              <h5 id="currentquestionid" class="card-title">{{ currentQuestion }}</h5>            
               <button id="btnQuestion" style="width: 80px;" type="button" class="btn btn-success" v-on:click="btnQuestion()" >Answer</button>
             </div>
           </div>
