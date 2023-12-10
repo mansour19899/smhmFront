@@ -56,7 +56,17 @@ font-size: 20px;
 font-weight: 500;
 margin-left: 20px;
 }
-   
+
+@font-face {
+  font-family: Tanha;
+  src: url('./assets/Font/Tanha.eot');
+  src: url('./assets/Font/Tanha.woff') format('woff'),
+       url('./assets/Font/Tanha.woff2') format('woff2'),
+       url('./assets/Font/Tanha.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-size: x-large;
+}
   </style>
 </head>
 
@@ -91,16 +101,16 @@ margin-left: 20px;
             <label class="form-label" style="font-weight: bold;color: white;">Number of Sentence Practice</label>
             <input type="number" v-model="takeSentenceNum" class="form-control mb-3">
             <div class="input-group mb-3">
-              <input type="file" class="form-control" id="inputGroupFile02" onchange='openFile(event)'>
+              <input type="file" ref="doc" class="form-control" id="inputGroupFile02" v-on:change="readFile()">
               <label class="input-group-text" for="inputGroupFile02">Upload</label>
             </div>
-            <textarea id='output' class="form-control" v-model="inputText" rows="6"></textarea>
+            <textarea id='output' class="form-control" v-model="InsertInputFormFile" rows="6"></textarea>
             <p class="mt-3" style="font-size: 18px;color: white;padding-left: 10px;">{{InputSentenceCount}} sentences entered. </p>
           </div>
         </div>
         <div class="row d-flex justify-content-center">
           <button v-on:click="start()" type="button" class="btn btn-success customeBtn" >Start</button>
-          <button v-on:click="inputText=''" type="button" class="btn btn-danger customeBtn">Clear</button>
+          <button v-on:click="content=null" type="button" class="btn btn-danger customeBtn">Clear</button>
         </div>
       </div>
       <div v-else-if="isQuestion">
@@ -118,8 +128,8 @@ margin-left: 20px;
               <div class="card text-dark bg-light mb-3" v-for="item in searchResult">
                
                 <div class="card-body">
-                  <h5 class="card-title">{{item.qu}}</h5>
-                  <p class="card-text" style="white-space: pre;">{{item.ans}}</p>
+                  <h5 class="card-title" style="font-family: Tanha;" >{{item.qu}}</h5>
+                  <p class="card-text" style="white-space: pre;font-family: Tanha;">{{item.ans}}</p>
                 </div>
               </div>
 
@@ -133,7 +143,9 @@ margin-left: 20px;
                 <div class="col-6">
                   <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="chkboxPlaySound">
-                    <label class="form-check-label" for="chkboxPlaySound">Play Sound</label>
+                    <label class="form-check-label" for="chkboxPlaySound"> Play Sound </label>
+                    <span v-if="isImport" class="form-check-label ml-3">--</span>
+                    <span v-if="isImport" class="form-check-label ml-3">{{ (index+1)+'/'+QuestionsCount}} </span>
                   </div>
                 </div>
                 <div class="col-6  text-end">
@@ -144,15 +156,19 @@ margin-left: 20px;
             
             </div>
             <div class="card-body">
-              <h5 id="currentquestionid" class="card-title">{{ currentQuestion }}</h5>            
+              <h5 id="currentquestionid" class="card-title" style="font-family: Tanha;">{{ currentQuestion }}</h5>            
               <button id="btnQuestion" style="width: 80px;" type="button" class="btn btn-success" v-on:click="btnQuestion()" >Answer</button>
             </div>
           </div>
           <div  class="card" style="margin-top: 40px; min-height: 150px;">
             <div  class="card-body">
-              <p v-if="ShowTheAnswer" class="card-title" style="white-space:pre;">{{ currentAnswer }}</p>            
-            </div>
+              <p id="p1" v-if="ShowTheAnswer" class="card-title" style="white-space:pre;">{{ currentAnswer }}</p>            
+            </div>           
           </div>
+          <div class="mt-3" style="height: 30px;">
+            <button v-if="ShowTheAnswer"   style="width: 80px;" type="button" class="btn btn-success" onClick="copyToClipboard('p1')"  > Copy </button>
+          </div>
+         
         </div>
 
       </div>

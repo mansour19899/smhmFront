@@ -31,18 +31,15 @@ async function Successsweet(message) {
   });
 }
 
-var openFile = function(event) {
-  var input = event.target;
-
-  var reader = new FileReader();
-  reader.onload = function() {
-    var text = reader.result;
-    var node = document.getElementById('output');
-    node.value  = text;  
-  };
-  reader.readAsText(input.files[0]);
-};
-
+function copyToClipboard(id) {
+  var from = document.getElementById(id);
+  var range = document.createRange();
+  window.getSelection().removeAllRanges();
+  range.selectNode(from);
+  window.getSelection().addRange(range);
+  document.execCommand('copy');
+  window.getSelection().removeAllRanges();
+}
 
 const app = Vue.createApp({
   data() {
@@ -61,7 +58,7 @@ const app = Vue.createApp({
       isQuestion: false,
       isSearchQuestion: false,
       sentenceCount: 0,
-      takeSentenceNum:10,
+      takeSentenceNum:100,
       currentQuestion:'',
       currentAnswer:'',
       ShowTheAnswer:false,
@@ -70,16 +67,44 @@ const app = Vue.createApp({
       textForSearchQuestion: "",
       QuestionsSearchList:[],
       QuestionsCount: 0,
+      file:null,
+      content: null,
     };
   },
   methods: {
+    readFile: function() {
+      this.file = this.$refs.doc.files[0];
+      const reader = new FileReader();
+      if (this.file.name.includes(".txt")) {
+        reader.onload = (res) => {
+          if(this.content==null){
+            this.content = res.target.result;
+          }
+          else{
+            this.content =this.content + "\r\n\r\n"+res.target.result;
+          }
+          
+        };
+        reader.onerror = (err) => console.log(err);
+        reader.readAsText(this.file);
+      } else {
+        this.content = "check the console for file output";
+        reader.onload = (res) => {
+          console.log(res.target.result);
+        };
+        reader.onerror = (err) => console.log(err);
+        reader.readAsText(this.file);
+      }
+     
+      
+    },
     async start() {
-      if (this.inputText == null) {
+      if (this.content == null) {
         Errorsweet("Insert Text");
         return;
       }
 
-      if (this.inputText.trim() == "") {
+      if (this.content.trim() == "") {
         Errorsweet("Insert Text");
         return;
       }
@@ -87,18 +112,17 @@ const app = Vue.createApp({
       const chkbox=document.querySelector('#chkQuestion');
       const chkbox2=document.querySelector('#chkSearch');
       if(chkbox.checked==true||chkbox2.checked==true)
-      {
+      {       
         this.Questions=[];
         this.indexQuestion=0;
         this.isDone=false;
         this.ShowTheAnswer=false;
         this.isSearchQuestion=false;
-        const ques=this.inputText.split("<br>");
+        const ques=this.content.split("<br>");
         console.log(ques);
-        const quess = ques[0].replace("\n", " \n ");
-        console.log(quess);
-        const tempp=quess.split("\n");
+        const tempp=ques[0].split("\r\n");
         console.log(tempp);
+
          this.Questions=[];
         let q='';
         let answer='';
@@ -132,10 +156,7 @@ const app = Vue.createApp({
               }
     
             }
-          }
-
-
-         
+          }          
         }
         if(chkbox2.checked==true){
           this.Questions = this.Questions;
@@ -149,29 +170,27 @@ const app = Vue.createApp({
         this.isImportSentences = false;
         this.isQuestion=true;
         this.QuestionsCount = this.Questions.length;
-        console.log(this.Questions);
-        console.log(this.QuestionsCount);
-        console.log("quuuuuuuu");
+       
+        console.log(this.QuestionsCount );
 
       }
-      else{
-        const lines = this.inputText.split("<br>");
+      else{        
+        const lines = this.content.split("<br>");
         const Words = lines[0].replace("\n", " \n ");
         const temp=Words.split("\n");
         const temp2 = temp.filter((e) => String(e).trim());
         this.sentences = this.shuffleArray(temp2).slice(0,this.takeSentenceNum);
         this.sentenceCount = this.sentences.length;
         this.isQuestion=false;
-        this.isDone = false;
-        this.isImport = true;
+        this.isDone = false;        
         this.isCorrect = false;
         this.isUncorrect = false;
-        this.SenteceInput = "";
-        this.index = 0;
+        this.SenteceInput = "";        
         this.isImportSentences = false;
         this.practice();
       }
-
+      this.index = 0;
+      this.isImport = true;
 
     },
     shuffleArray: function(array) {
@@ -276,7 +295,7 @@ const app = Vue.createApp({
     },
     async btnQuestion(){
       if(this.ShowTheAnswer){
-        console.log(this.indexQuestion);
+       
         if(this.indexQuestion==this.QuestionsCount-1)
         {         
           this.isDone=true;
@@ -285,8 +304,6 @@ const app = Vue.createApp({
         document.getElementById('btnQuestion').innerText="Answer";
         this.ShowTheAnswer=false;
         this.indexQuestion=this.indexQuestion+1;
-        console.log(this.Questions);
-        console.log(this.Questions[this.indexQuestion].qu);
         this.currentQuestion=this.Questions[this.indexQuestion].qu;
         this.currentAnswer=this.Questions[this.indexQuestion].ans;
         if(chkboxPlaySound.checked==true)
@@ -294,6 +311,7 @@ const app = Vue.createApp({
           responsiveVoice.speak(this.currentQuestion.split("(")[0], "US English Male");
           console.log("paly sound");
         }
+        this.index = this.index + 1;
       }
       else{
        document.getElementById('btnQuestion').innerText="Next";
@@ -306,15 +324,23 @@ const app = Vue.createApp({
   computed: {
     InputSentenceCount: function() {
       let Num=0;
-      if(this.inputText!=null)
+      if(this.content!=null)
       {
-        const lines = this.inputText.split("<br>");
+        const lines = this.content.split("<br>");
         const Words = lines[0].split("\n");
         const temp2 = Words.filter((e) => String(e).trim());
         Num=temp2.length;
       }
       return Num;
   },
+  InsertInputFormFile: function() {
+    let Num=0;
+    if(this.content!=null)
+    {      
+      return this.content;     
+    }
+    return "";
+},
   searchResult() {
 
     let templist = this.Questions;
